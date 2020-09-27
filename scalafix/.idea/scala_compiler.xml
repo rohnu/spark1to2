@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ScalaCompilerConfiguration">
+    <profile name="sbt 1" modules="scalafix_5751" />
+    <profile name="sbt 3" modules="input,output,rules,scalafix,tests">
+      <parameters>
+        <parameter value="-Yrangepos" />
+        <parameter value="-P:semanticdb:synthetics:on" />
+        <parameter value="-Ywarn-unused" />
+      </parameters>
+      <plugins>
+        <plugin path="$USER_HOME$/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scalameta/semanticdb-scalac_2.12.12/4.3.22/semanticdb-scalac_2.12.12-4.3.22.jar" />
+      </plugins>
+    </profile>
+  </component>
+</project>

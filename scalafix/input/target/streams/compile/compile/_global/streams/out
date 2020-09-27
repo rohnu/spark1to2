@@ -1,0 +1,4 @@
+[0m[[0m[31merror[0m] [0m[0m/Users/rganeshbabu/workspace/spark1t02/scalafix/input/src/main/scala/fix/Spark1to2.scala:25:26: Unable to find encoder for type Int. An implicit Encoder[Int] is needed to store Int instances in a Dataset. Primitive types (Int, String, etc) and Product types (case classes) are supported by importing spark.implicits._  Support for serializing other types will be added in future releases.[0m
+[0m[[0m[31merror[0m] [0m[0m    val mapped = file.map(s => s.length).cache()[0m
+[0m[[0m[31merror[0m] [0m[0m                         ^[0m
+[0m[[0m[31merror[0m] [0m[0mone error found[0m

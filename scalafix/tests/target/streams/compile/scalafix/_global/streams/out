@@ -1,0 +1,5 @@
+[0m[[0m[31merror[0m] [0m[0m(tests / Compile / [31mscalafix[0m) scalafix.sbt.InvalidArgument: /Users/rganeshbabu/workspace/spark1t02/scalafix/rules/src/main/scala/fix/Spark1to2.scala:76:52 error: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : Seq[scalafix.patch.Patch][0m
+[0m[[0m[31merror[0m] [0m[0m required: String[0m
+[0m[[0m[31merror[0m] [0m[0m        Seq(Patch.replaceTree(t, "appName()")) + Seq(Patch.addRight(t, s".getOrCreate() "))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                    ^[0m

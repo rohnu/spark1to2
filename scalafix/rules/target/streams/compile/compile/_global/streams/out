@@ -1,0 +1,10 @@
+[0m[[0m[33mwarn[0m] [0m[0m/Users/rganeshbabu/workspace/spark1t02/scalafix/rules/src/main/scala/fix/Spark1to2.scala:53:12: pattern var i in method applyOrElse is never used; `i@_' suppresses this warning[0m
+[0m[[0m[33mwarn[0m] [0m[0m      case i @ Importer(ref, xs) if xs.toString.contains("SparkConf") || xs.toString.contains("{SparkConf, SparkContext}") || xs.toString.contains("SparkContext")=>[0m
+[0m[[0m[33mwarn[0m] [0m[0m           ^[0m
+[0m[[0m[33mwarn[0m] [0m[0m/Users/rganeshbabu/workspace/spark1t02/scalafix/rules/src/main/scala/fix/Spark1to2.scala:53:25: pattern var ref in method applyOrElse is never used; `ref@_' suppresses this warning[0m
+[0m[[0m[33mwarn[0m] [0m[0m      case i @ Importer(ref, xs) if xs.toString.contains("SparkConf") || xs.toString.contains("{SparkConf, SparkContext}") || xs.toString.contains("SparkContext")=>[0m
+[0m[[0m[33mwarn[0m] [0m[0m                        ^[0m
+[0m[[0m[33mwarn[0m] [0m[0m/Users/rganeshbabu/workspace/spark1t02/scalafix/rules/src/main/scala/fix/Spark1to2.scala:116:12: pattern var s in method applyOrElse is never used; `s@_' suppresses this warning[0m
+[0m[[0m[33mwarn[0m] [0m[0m      case s @ Term.Apply(Term.Name("struct"), args) if args.forall(x => x.isInstanceOf[Term.Assign]) =>[0m
+[0m[[0m[33mwarn[0m] [0m[0m           ^[0m
+[0m[[0m[33mwarn[0m] [0m[0mthree warnings found[0m

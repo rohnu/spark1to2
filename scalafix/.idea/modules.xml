@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/input.iml" filepath="$PROJECT_DIR$/.idea/modules/input.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/output.iml" filepath="$PROJECT_DIR$/.idea/modules/output.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/rules.iml" filepath="$PROJECT_DIR$/.idea/modules/rules.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalafix.iml" filepath="$PROJECT_DIR$/.idea/modules/scalafix.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalafix-build.iml" filepath="$PROJECT_DIR$/.idea/modules/scalafix-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tests.iml" filepath="$PROJECT_DIR$/.idea/modules/tests.iml" />
+    </modules>
+  </component>
+</project>
