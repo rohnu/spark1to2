@@ -1,4 +1,4 @@
-# spark1to2
+# Spark 1.6 to 2.4
 
 # Scalafix rules for My Repo
 
