@@ -70,8 +70,11 @@ class Spark1to2Println extends SemanticRule("Spark1to2Println") {
 
   override def fix(implicit doc: SemanticDocument): Patch = {
     val patches: Seq[Seq[Patch]] = doc.tree.collect ({
-      case println @ Term.Apply(Term.Name("println"), _) =>
-        Seq(Patch.lint(Println(println.pos)))
+     /*case println @ Term.Apply(Term.Name("println"), _) =>
+        Seq(Patch.lint(Println(println.pos)))*/
+
+      case pl @ Term.Apply(Term.Name("println"), _) =>
+        Seq(Patch.addRight(pl,s" //Println Syntax can be used as like  println(s\"<your message>\")"))
     })
     patches.flatten.fold(Patch.empty)(_ + _)
   }
@@ -87,22 +90,23 @@ class Spark1to2Session extends SemanticRule("Spark1to2Session") {
 
 
       case  n @ Term.New(Init(t,name,arg)) if  t.toString.contains("SparkConf") =>
-        Seq(Patch.replaceTree(n, "SparkSession.builder.appName(\"<AppName>\").getOrCreate()"))
+        Seq(Patch.replaceTree(n, "SparkSession.builder.appName(\"<AppName>\").getOrCreate() // Edit your App Name, if using"))
 
 
-      /*case  t @ Term.Name("setAppName") =>
-        Seq(Patch.replaceTree(t, "appName"))*/
+      case  t @ Term.Name("setAppName") =>
+        Seq(Patch.removeTokens(t.tokens))
 
       case  n @ Term.New(Init(t,name,arg)) if  t.toString.contains("SparkContext") =>
         Seq(Patch.replaceTree(n, "spark"))
 
+      case  p @ Pat.Var(Term.Name("sparkConf")) =>
+      Seq(Patch.replaceTree(p, "spark"))
 
       case  t @ Term.Name("textFile") =>
-        Seq(Patch.replaceTree(t, "read.text"))
+        Seq(Patch.replaceTree(t, "read.text(\"<file_arg>\").rdd // Include File_Argument if any "))
 
       case  t @ Term.Name("parallelize") =>
         Seq(Patch.replaceTree(t, "sparkContext.parallelize"))
-
     })
     //println("Tree.syntax: " + doc.tree.syntax)
     //println("Tree.structure: " + doc.tree.structure)
