@@ -22,7 +22,7 @@ To run scalafix:
 
 If you have the source code for the rule on your local machine, you can run a custom rule using the file:/path/to/NamedLiteralArguments.scala syntax.
 ```
-scalafix --rules=file:/path/to/NamedLiteralArguments.scala
+scalafix --rules=file:/path/to/spark1to2.scala
 ```
 
 Scalafix 101 video:
