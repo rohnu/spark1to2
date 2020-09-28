@@ -86,22 +86,22 @@ class Spark1to2Session extends SemanticRule("Spark1to2Session") {
     val patches: Seq[Seq[Patch]] = doc.tree.collect({
 
 
-      case  t @ Type.Name("SparkConf") =>
-        Seq(Patch.replaceTree(t, "SparkSession.builder")+ Patch.addRight(t, s".getOrCreate() // "))
+      case  n @ Term.New(Init(t,name,arg)) if  t.toString.contains("SparkConf") =>
+        Seq(Patch.replaceTree(n, "SparkSession.builder.appName(\"<AppName>\").getOrCreate()"))
 
 
-      case  t @ Term.Name("setAppName") =>
-        Seq(Patch.removeTokens(t.tokens))
+      /*case  t @ Term.Name("setAppName") =>
+        Seq(Patch.replaceTree(t, "appName"))*/
 
+      case  n @ Term.New(Init(t,name,arg)) if  t.toString.contains("SparkContext") =>
+        Seq(Patch.replaceTree(n, "spark"))
 
-      case  t @ Type.Name("SparkContext") =>
-        Seq(Patch.replaceTree(t, "spark"))
 
       case  t @ Term.Name("textFile") =>
         Seq(Patch.replaceTree(t, "read.text"))
 
-      case  t @ Term.New(_) =>
-        Seq(Patch.removeTokens(t.tokens))
+      case  t @ Term.Name("parallelize") =>
+        Seq(Patch.replaceTree(t, "sparkContext.parallelize"))
 
     })
     //println("Tree.syntax: " + doc.tree.syntax)
