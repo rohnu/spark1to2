@@ -117,3 +117,46 @@ class Spark1to2Session extends SemanticRule("Spark1to2Session") {
 
 }
 
+class Spark1to2HiveSession extends SemanticRule("Spark1to2HiveSession") {
+
+  override def fix(implicit doc: SemanticDocument): Patch = {
+    //println("Tree.structureLabeled: " + doc.tree.structureLabeled)
+
+    val patches: Seq[Seq[Patch]] = doc.tree.collect({
+
+
+      case  n @ Term.New(Init(t,name,arg)) if  t.toString.contains("SparkConf") =>
+        Seq(Patch.replaceTree(n, "SparkSession.builder.appName(\"<HiveAppName>\").config(\"spark.sql.warehouse.dir\", warehouseLocation).enableHiveSupport().getOrCreate() // Edit your Spark-Hive App Name, if using"))
+
+
+      case  t @ Term.Name("setAppName") =>
+        Seq(Patch.removeTokens(t.tokens))
+
+      case  n @ Term.New(Init(t,name,arg)) if  t.toString.contains("SparkContext") =>
+        Seq(Patch.replaceTree(n, "spark"))
+
+      case  n @ Term.New(Init(t,name,arg)) if  t.toString.contains("HiveContext") =>
+        Seq(Patch.replaceTree(n, "spark"))
+
+      case  p @ Pat.Var(Term.Name("sparkConf")) =>
+        Seq(Patch.replaceTree(p, "spark"))
+
+      case  p @ Pat.Var(Term.Name("hiveContext")) =>
+        Seq(Patch.replaceTree(p, "spark"))
+
+      case  t @ Term.Name("parallelize") =>
+        Seq(Patch.replaceTree(t, "createDataFrame"))
+
+      case  t @ Term.Name("toDF") =>
+        Seq(Patch.removeTokens(t.tokens))
+
+      case  t @ Term.Name("registerTempTable") =>
+        Seq(Patch.replaceTree(t, "createOrReplaceTempView"))
+    })
+    //println("Tree.syntax: " + doc.tree.syntax)
+    //println("Tree.structure: " + doc.tree.structure)
+
+
+    patches.flatten.fold(Patch.empty)(_ + _)
+  }
+
