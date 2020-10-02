@@ -52,11 +52,17 @@ class Spark1to2Import extends SemanticRule("Spark1to2Import") {
     val patches: Seq[Seq[Patch]] = doc.tree.collect({
       case i @ Importer(ref, xs) if xs.toString.contains("SparkConf") || xs.toString.contains("{SparkConf, SparkContext}") || xs.toString.contains("SparkContext")=>
         xs.map(Patch.removeImportee)
+      case i @ Importer(ref, xs) if xs.toString.contains("HiveContext")  =>
+        xs.map(Patch.removeImportee)
+      case i @ Importer(ref, xs) if xs.toString.contains("DataFrame")  =>
+        xs.map(Patch.removeImportee)
     })
 
     if (patches.nonEmpty) {
       patches.flatten.reduce(_ + _) +
-        Patch.addGlobalImport(importer"org.apache.spark.sql.SparkSession")
+        Patch.addGlobalImport(importer"org.apache.spark.sql.SparkSession") +
+        Patch.addGlobalImport(importer"org.apache.spark.sql.{Row, SaveMode, SparkSession}") +
+        Patch.addGlobalImport(importer"org.apache.spark.sql.Dataset")
     } else Patch.empty
   }
 }
@@ -70,11 +76,11 @@ class Spark1to2Println extends SemanticRule("Spark1to2Println") {
 
   override def fix(implicit doc: SemanticDocument): Patch = {
     val patches: Seq[Seq[Patch]] = doc.tree.collect ({
-     /*case println @ Term.Apply(Term.Name("println"), _) =>
+      /*case println @ Term.Apply(Term.Name("println"), _) =>
         Seq(Patch.lint(Println(println.pos)))*/
 
       case pl @ Term.Apply(Term.Name("println"), _) =>
-        Seq(Patch.addRight(pl,s" //Println Syntax can be used as like  println(s\"<your message>\")"))
+        Seq(Patch.addRight(pl,s"//Println Syntax can be used as like  println(s(println statement)"))
     })
     patches.flatten.fold(Patch.empty)(_ + _)
   }
@@ -97,16 +103,23 @@ class Spark1to2Session extends SemanticRule("Spark1to2Session") {
         Seq(Patch.removeTokens(t.tokens))
 
       case  n @ Term.New(Init(t,name,arg)) if  t.toString.contains("SparkContext") =>
+        Seq(Patch.replaceTree(n, "spark.sparkContext"))
+
+      case  n @ Term.New(Init(t,name,arg)) if  t.toString.contains("SQLContext") =>
         Seq(Patch.replaceTree(n, "spark"))
 
       case  p @ Pat.Var(Term.Name("sparkConf")) =>
       Seq(Patch.replaceTree(p, "spark"))
 
-      case  t @ Term.Name("textFile") =>
-        Seq(Patch.replaceTree(t, "read.text(\"<file_arg>\").rdd // Include File_Argument if any "))
+      case  p @ Pat.Var(Term.Name("sqlContext")) =>
+        Seq(Patch.replaceTree(p, "spark"))
 
-      case  t @ Term.Name("parallelize") =>
-        Seq(Patch.replaceTree(t, "sparkContext.parallelize"))
+      case  t @ Term.Name("unionAll") =>
+        Seq(Patch.replaceTree(t, "union"))
+
+      case  t @ Term.Name("registerTempTable") =>
+        Seq(Patch.replaceTree(t, "createOrReplaceTempView"))
+
     })
     //println("Tree.syntax: " + doc.tree.syntax)
     //println("Tree.structure: " + doc.tree.structure)
@@ -116,6 +129,31 @@ class Spark1to2Session extends SemanticRule("Spark1to2Session") {
   }
 
 }
+
+
+class Spark1to2ML extends SemanticRule("Spark1to2ML") {
+
+  override def fix(implicit doc: SemanticDocument): Patch = {
+    //println("Tree.structureLabeled: " + doc.tree.structureLabeled)
+
+    val patches: Seq[Seq[Patch]] = doc.tree.collect({
+
+
+     case s @ Term.Select(Term.Select(Term.Name(qual), Term.Name("loadLibSVMFile")), arg) if qual.toString.contains("MLUtils") => {
+        Seq(Patch.replaceTree(s, "spark.read.(\"libsvm\").load") + Patch.removeTokens(arg.tokens))
+
+        }
+
+    })
+    //println("Tree.syntax: " + doc.tree.syntax)
+    //println("Tree.structure: " + doc.tree.structure)
+
+
+    patches.flatten.fold(Patch.empty)(_ + _)
+  }
+
+}
+
 
 class Spark1to2HiveSession extends SemanticRule("Spark1to2HiveSession") {
 
@@ -129,29 +167,30 @@ class Spark1to2HiveSession extends SemanticRule("Spark1to2HiveSession") {
         Seq(Patch.replaceTree(n, "SparkSession.builder.appName(\"<HiveAppName>\").config(\"spark.sql.warehouse.dir\", warehouseLocation).enableHiveSupport().getOrCreate() // Edit your Spark-Hive App Name, if using"))
 
 
-      case  t @ Term.Name("setAppName") =>
-        Seq(Patch.removeTokens(t.tokens))
-
-      case  n @ Term.New(Init(t,name,arg)) if  t.toString.contains("SparkContext") =>
-        Seq(Patch.replaceTree(n, "spark"))
-
       case  n @ Term.New(Init(t,name,arg)) if  t.toString.contains("HiveContext") =>
         Seq(Patch.replaceTree(n, "spark"))
 
-      case  p @ Pat.Var(Term.Name("sparkConf")) =>
-        Seq(Patch.replaceTree(p, "spark"))
 
       case  p @ Pat.Var(Term.Name("hiveContext")) =>
         Seq(Patch.replaceTree(p, "spark"))
 
+      /*case  c @ Lit.String(syntax) if syntax.toString.toUpperCase.contains("CREATE TABLE") && !syntax.toString.toUpperCase.contains("LOCATION") =>
+        Seq(Patch.removeTokens(c.tokens) + Patch.addLeft(c,"\"" + syntax.toUpperCase  + " LOCATION($file_path)\""))*/
+      case Term.Apply(Term.Name("sql"), args) =>
+        args.collect {
+          case t @ Lit.String(syntax) if (syntax.toString.toUpperCase.contains("CREATE TABLE") || syntax.toString.toUpperCase.contains("CREATE EXTERNAL TABLE") ) && !syntax.toString.toUpperCase.contains("LOCATION") =>
+            Patch.removeTokens(t.tokens) + Patch.addLeft(t,"\"" + syntax.toUpperCase  + " LOCATION($file_path)\"")
+        }
+
+
       case  t @ Term.Name("parallelize") =>
         Seq(Patch.replaceTree(t, "createDataFrame"))
 
-      case  t @ Term.Name("toDF") =>
-        Seq(Patch.removeTokens(t.tokens))
-
       case  t @ Term.Name("registerTempTable") =>
         Seq(Patch.replaceTree(t, "createOrReplaceTempView"))
+
+      case  t @ Term.Name("unionAll") =>
+        Seq(Patch.replaceTree(t, "union"))
     })
     //println("Tree.syntax: " + doc.tree.syntax)
     //println("Tree.structure: " + doc.tree.structure)
@@ -160,3 +199,44 @@ class Spark1to2HiveSession extends SemanticRule("Spark1to2HiveSession") {
     patches.flatten.fold(Patch.empty)(_ + _)
   }
 
+}
+class Spark1to2Rest extends SemanticRule("Spark1to2Rest") {
+
+  override def fix(implicit doc: SemanticDocument): Patch = {
+    //println("Tree.structureLabeled: " + doc.tree.structureLabeled)
+
+    val patches: Seq[Seq[Patch]] = doc.tree.collect({
+
+
+      case t @ Type.Name("fromCaseClassString") =>
+        Seq(Patch.replaceTree(t, "fromJson"))
+
+      case t @ Type.Apply(Type.Name("TypedExpr"), x :: Nil) =>
+        Seq(Patch.replaceTree(t, s"Expr[$x]"))
+
+
+      case  t @ Type.Select(Term.Name("Fnk"), _) =>
+        Seq(Patch.removeTokens(t.tokens.take(2)))
+
+      case s @ Term.Apply(Term.Name("struct"), args) if args.forall(x => x.isInstanceOf[Term.Assign]) =>
+        val assigns = args.asInstanceOf[Seq[Term.Assign]]
+        assigns.map({
+          case t @ Term.Assign(n @ Term.Name(_), rhs) =>
+            val equalToken = t.tokens.tokens.drop(n.tokens.end).find(_.text == "=").get
+            Patch.addLeft(n, "\"") +
+              Patch.addRight(n, "\"") +
+              Patch.removeToken(equalToken) +
+              Patch.addLeft(rhs, "<<- ")
+        })
+
+      case Term.ApplyInfix(_, p @ Term.Name("|"), _, _) =>
+        Seq(Patch.replaceTree(p, ","))
+    })
+    //println("Tree.syntax: " + doc.tree.syntax)
+    //println("Tree.structure: " + doc.tree.structure)
+
+
+    patches.flatten.fold(Patch.empty)(_ + _)
+  }
+
+}
