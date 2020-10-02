@@ -6,9 +6,9 @@ CDP ships with Spark 2.4 in both Spark 2.4 on both Private and Public Cloud.
 
 Purpose
 
-```
+
 As we know that the latest release of Spark 2.0 has too much enhancement and new features. If you are using Spark 1.6.4 and now you want to move your application with Spark 2.4.4 that time you have to take care for some changes which happened in the API. In this blog we are going to get an overview of common changes and we are going to achieve the automation using refactoring tool.
-```
+
 1)	First noticeable changes are Spark Context which is the entry point to Spark. It is one of the very first objects you create while developing a Spark application. In Spark 2.4, SparkContext constructor has been deprecated hence, the recommendation is to use a static method getOrCreate() with SparkSession API. We can get SparkContext and SqlContext both in the SparkSession 
 
 ```
