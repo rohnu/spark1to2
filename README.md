@@ -36,7 +36,7 @@ To develop rule:
 ```
 cd repo-name # The project you want to implement rules for.
 
-sbt new scalacenter/scalafix.g8 --repo="Repository Name"
+sbt new scalacenter/scalafix.g8 --repo="spark1to2"
 cd scalafix
 sbt tests/test
 https://scalacenter.github.io/scalafix/docs/developers/setup.html
