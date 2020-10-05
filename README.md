@@ -34,7 +34,7 @@ import org.apache.spark.sql.Row;
 
 To develop rule:
 ```
-cd spark1t02 # The project you want to implement rules for.
+cd spark1to2 # The project you want to implement rules for.
 
 sbt new scalacenter/scalafix.g8 --repo="spark1to2"
 cd scalafix
