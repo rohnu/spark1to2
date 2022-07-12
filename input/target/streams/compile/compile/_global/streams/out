@@ -1,0 +1,11 @@
+[0m[[0m[31merror[0m] [0m[0m/Users/rganeshbabu/workspace/spark1t02/scalafix/input/src/main/scala/fix/Spark1to2.scala:31:16: not found: value sc[0m
+[0m[[0m[31merror[0m] [0m[0m    val file = sc.textFile(args(0))[0m
+[0m[[0m[31merror[0m] [0m[0m               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/Users/rganeshbabu/workspace/spark1t02/scalafix/input/src/main/scala/fix/Spark1to2.scala:40:7: not found: value sc[0m
+[0m[[0m[31merror[0m] [0m[0m      sc.stop()[0m
+[0m[[0m[31merror[0m] [0m[0m      ^[0m
+[0m[[0m[33mwarn[0m] [0m[0m/Users/rganeshbabu/workspace/spark1t02/scalafix/input/src/main/scala/fix/Spark1to2.scala:28:28: Unused import[0m
+[0m[[0m[33mwarn[0m] [0m[0m    import spark.implicits._[0m
+[0m[[0m[33mwarn[0m] [0m[0m                           ^[0m
+[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m
+[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m
