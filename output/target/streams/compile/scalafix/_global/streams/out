@@ -1,0 +1,3 @@
+[0m[[0m[31merror[0m] [0m[0m(output / Compile / [31mscalafix[0m) scalafix.sbt.InvalidArgument: /Users/rganeshbabu/workspace/spark1t02/scalafix/rules/src/main/scala/fix/Spark1to2.scala:177:48 error: scalafix.patch.Patch.type does not take parameters[0m
+[0m[[0m[31merror[0m] [0m[0m        Seq(Patch.removeTokens(c.tokens) + Patch(c,syntax.mkString(syntax.toUpperCase  + " LOCATION($file_path)\")")))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                ^[0m

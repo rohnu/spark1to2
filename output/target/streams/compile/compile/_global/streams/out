@@ -1,0 +1,19 @@
+[0m[[0m[33mwarn[0m] [0m[0m/Users/rganeshbabu/workspace/spark1t02/scalafix/output/src/main/scala/fix/GroupByTest.scala:13:9: local var numMappers in method main is never updated: consider using immutable val[0m
+[0m[[0m[33mwarn[0m] [0m[0m    var numMappers = if (args.length > 0) args(0).toInt else 2[0m
+[0m[[0m[33mwarn[0m] [0m[0m        ^[0m
+[0m[[0m[33mwarn[0m] [0m[0m/Users/rganeshbabu/workspace/spark1t02/scalafix/output/src/main/scala/fix/GroupByTest.scala:14:9: local var numKVPairs in method main is never updated: consider using immutable val[0m
+[0m[[0m[33mwarn[0m] [0m[0m    var numKVPairs = if (args.length > 1) args(1).toInt else 1000[0m
+[0m[[0m[33mwarn[0m] [0m[0m        ^[0m
+[0m[[0m[33mwarn[0m] [0m[0m/Users/rganeshbabu/workspace/spark1t02/scalafix/output/src/main/scala/fix/GroupByTest.scala:15:9: local var valSize in method main is never updated: consider using immutable val[0m
+[0m[[0m[33mwarn[0m] [0m[0m    var valSize = if (args.length > 2) args(2).toInt else 1000[0m
+[0m[[0m[33mwarn[0m] [0m[0m        ^[0m
+[0m[[0m[33mwarn[0m] [0m[0m/Users/rganeshbabu/workspace/spark1t02/scalafix/output/src/main/scala/fix/GroupByTest.scala:16:9: local var numReducers in method main is never updated: consider using immutable val[0m
+[0m[[0m[33mwarn[0m] [0m[0m    var numReducers = if (args.length > 3) args(3).toInt else numMappers[0m
+[0m[[0m[33mwarn[0m] [0m[0m        ^[0m
+[0m[[0m[33mwarn[0m] [0m[0m/Users/rganeshbabu/workspace/spark1t02/scalafix/output/src/main/scala/fix/GroupByTest.scala:22:11: local var arr1 in value $anonfun is never updated: consider using immutable val[0m
+[0m[[0m[33mwarn[0m] [0m[0m      var arr1 = new Array[(Int, Array[Byte])](numKVPairs)[0m
+[0m[[0m[33mwarn[0m] [0m[0m          ^[0m
+[0m[[0m[33mwarn[0m] [0m[0m/Users/rganeshbabu/workspace/spark1t02/scalafix/output/src/main/scala/fix/GroupByTest.scala:20:75: parameter value p in value $anonfun is never used[0m
+[0m[[0m[33mwarn[0m] [0m[0m    val pairs1 = sc.parallelize(0 until numMappers, numMappers).flatMap { p =>[0m
+[0m[[0m[33mwarn[0m] [0m[0m                                                                          ^[0m
+[0m[[0m[33mwarn[0m] [0m[0m6 warnings found[0m
